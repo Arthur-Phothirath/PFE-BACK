@@ -1,6 +1,6 @@
+const { Category } = require('../models');
 const express = require('express');
 const router = express.Router();
-const Category = require('../models/Category.js');
 let auth = require('../services/authentication');
 let checkRole = require('../services/checkRole');
 
