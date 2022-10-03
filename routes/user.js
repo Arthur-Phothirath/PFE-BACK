@@ -20,6 +20,9 @@ router.post('/signup', async (req, res) => {
     if (userExist) {
       return res.status(400).json({ message: 'Email Already Exists' });
     }
+    if (userExist.password.length < 6) {
+      return res.json('Password must be 6 characters long or more');
+    }
     try {
       const user = await User.create(req.body);
       res.json(user);
@@ -30,32 +33,6 @@ router.post('/signup', async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-
-  // connection.query(query, [user.email], (err, results) => {
-  //   if (!err) {
-  //     if (results.length <= 0) {
-  //       query =
-  //         "insert into user(name,contactNumber,email,password,status,role) values(?,?,?,?,'false','user')";
-  //       connection.query(
-  //         query,
-  //         [user.name, user.contactNumber, user.email, user.password],
-  //         (err, results) => {
-  //           if (!err) {
-  //             return res
-  //               .status(200)
-  //               .json({ message: 'Successfully Registerd' });
-  //           } else {
-  //             return res.status(500).json(err);
-  //           }
-  //         }
-  //       );
-  //     } else {
-  //       return res.status(400).json({ message: 'Email Already Exists' });
-  //     }
-  //   } else {
-  //     return res.status(500).json(err);
-  //   }
-  // });
 });
 
 router.post('/login', async (req, res) => {
@@ -86,29 +63,6 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-
-  // const user = req.body;
-  // let query = "select email, password, role, status from user where email=?";
-  // connection.query(query,[user.email],(err, results) => {
-  //     if(!err){
-  //         if(results.length <= 0 || results[0].password != user.password){
-  //             return res.status(401).json({message: "Incorrect Username or password"})
-  //         }
-  //         else if(results[0].status === 'false'){
-  //             return res.status(401).json({message: "Wait for Admin Approval"});
-  //         }
-  //         else if(results[0].password === user.password) {
-  //             const response = {email: results[0].email, role: results[0].role};
-  //             const accessToken = jwt.sign(response, process.env.ACCESS_TOKEN, {expiresIn: '8h'});
-  //             res.status(200).json({token: accessToken});
-  //         }
-  //         else {
-  //             return res.status(400).json({message: "Something went wrong"})
-  //         }
-  //     } else {
-  //         return res.status(500).json(err);
-  //     }
-  // })
 });
 
 let transporter = nodemailer.createTransport({
@@ -144,7 +98,7 @@ router.post('/forgetpassword', async (req, res) => {
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log(error);
+        return res.status(500).json({ message: 'Something went wrong.' });
       } else {
         console.log('Email sent' + info.response);
       }
@@ -154,22 +108,6 @@ router.post('/forgetpassword', async (req, res) => {
       .json({ message: 'Password sent successfully tp your email.' });
   } catch (err) {
     res.status(500).json(err);
-  }
-});
-
-router.get('/test', async (req, res) => {
-  try {
-    const user = await User.create({
-      name: 'admin',
-      contactNumber: '1',
-      email: 'admin.com',
-      password: 'admin',
-      valided: 1,
-      role: 'admin'
-    });
-    res.json(user);
-  } catch (err) {
-    res.json(err);
   }
 });
 
@@ -215,7 +153,7 @@ router.patch(
       try {
         await userExist.save();
         return res.status(200).json({ message: ' User Updated Successfully' });
-      } catch(err) {
+      } catch (err) {
         res.status(500).json(err);
       }
     } catch (err) {
@@ -228,34 +166,81 @@ router.get('/checkToken', auth.authenticateToken, (req, res) => {
   return res.status(200).json({ message: 'true' });
 });
 
-// how compare salted password?
+router.patch('/changePassword', auth.authenticateToken, async (req, res) => {
+  try {
+    const user = req.body;
+    const emailUser = res.locals.email;
+    let userExist = await User.findOne({
+      where: {
+        email: emailUser,
+      },
+    });
+    if (user.newPassword.length < 5) {
+      return res
+        .status(400)
+        .json({ message: 'Password must be at least 6 characters long' });
+    }
+    if (!userExist) {
+      return res.status(500).json({ message: 'Something went wrong.' });
+    }
+    if (!(await bcrypt.compare(user.oldPassword, userExist.password))) {
+      return res
+        .status(400)
+        .json({ message: 'Oldpassword must be same actual password' });
+    }
+    if (user.oldPassword == user.newPassword) {
+      return res
+        .status(400)
+        .json({ message: 'The old and new password cannot be the same' });
+    }
+    try {
+      userExist.password = user.newPassword;
+      try {
+        await userExist.save();
+        try {
+          return res
+            .status(200)
+            .json({ message: 'Password Updated Successfully' });
+        } catch (err) {
+          res.status(500).json(err);
+        }
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } catch {
+      return res.status(500).json({ message: 'Something went wrong.' });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed' });
+  }
+});
 
-// router.post('/changePassword', auth.authenticateToken, async (req,res) => {
-//   const user = req.body;
-//   const email = res.locals.email;
-//   let userExist = await User.findOne({
-//     where: {
-//       email: email,
-//     }
-//   });
-// const salt = bcrypt.genSaltSync();
-// oldUserPassword = bcrypt.hashSync(user.oldPassword, salt);
-// newUserPassword = bcrypt.hashSync(user.newPassword, salt);
-// return res.json(oldUserPassword)
-// return res.json(newUserPassword)
-// if(!userExist){
-//   return res.status(500).json({ message: 'Something went wrong.' });
-// }
-// if(!await bcrypt.compare(userExist.password, user.oldPassword)){
-//   return res.json(user.oldPassword);
-//   return res.json(userExist.password);
-// return res.status(400).json({ message: 'Same as old Password.' });
-// }
-// if(await bcrypt.compare(user.newPassword, user.oldPassword)){
-//   return res.status(400).json({ message: 'The old and new password cannot be the same' });
-// }
-// userExist.password = newUserPassword;
-// return res.status(200).json({ message: "Password Updated Successfully"})
-// })
+router.get('/createUser', async (req, res) => {
+  try {
+    const user = await User.create({
+      name: 'admin',
+      contactNumber: '1',
+      email: 'admin.com',
+      password: 'admin',
+      valided: 1,
+      role: 'admin',
+    });
+    res.json(user);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
+router.get('/getAllUser', async (req, res, next) => {
+  try {
+    let userQuery = await User.findAll();
+    if (!userQuery) {
+      return res.status(500).json('Failed');
+    }
+    return res.status(200).json(userQuery);
+  } catch (err) {
+    res.status(500).json('Failed');
+  }
+});
 
 module.exports = router;
