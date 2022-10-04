@@ -1,5 +1,6 @@
 const express = require('express');
-const { Category, Product } = require('../models');
+const { productMiddleware } = require('../middlewares');
+const { Category, Product, sequelize } = require('../models');
 const router = express.Router();
 let auth = require('../services/authentication');
 let checkRole = require('../services/checkRole');
@@ -8,47 +9,41 @@ router.post(
   '/add',
   auth.authenticateToken,
   checkRole.checkRole,
+  productMiddleware.productExist,
   async (req, res, next) => {
     let product = req.body;
+    const t = await sequelize.transaction();
     try {
-      let productExist = await Product.findOne({
-        where: {
-          name: product.name,
-          categoryId: product.categoryId,
-          description: product.description,
-          price: product.price,
-          status: product.status,
-        },
-      });
-      if (productExist) {
-        return res.json('Product already exist.');
+      if (res.locals.productExist) {
+        throw new Error();
       }
-      return res.status(200).json({ message: 'Product Added Successfully' });
-    } catch (err) {
-      res.status(500).json(err);
+      const productCreate = await Product.create(product, {
+        transaction: t,
+      });
+      for (const categoryId of product.categories) {
+        await productCreate.addCategory(categoryId, { transaction: t });
+      }
+      await t.commit();
+      return res.status(201).json({ message: 'Product Added Successfully' });
+    } catch ({ message }) {
+      await t.rollback();
+      res.status(400).json({ message: 'Internals issues' });
     }
   }
 );
 
-router.get('/get', async (req, res, next) => {
-  let product = req.body;
+router.get('/get', async (req, res) => {
   try {
     let productQuery = await Product.findAll({
-      // where: {
-      //   name: product.name,
-      //   categoryId: product.categoryId,
-      //   description: product.description,
-      //   price: product.price,
-      // },
       include: [
         {
           model: Category,
-          as: 'Categories',
+          as: 'categories',
         },
       ],
     });
     if (!productQuery) {
-      return res.status(500).json(err);
+      throw new Error();
     }
     return res.status(200).json(productQuery);
   } catch (err) {
@@ -85,16 +80,36 @@ router.patch(
 );
 
 router.get('/test', async (req, res) => {
+  // try {
+  //   const product = await Product.create({
+  // name: 'sas',
+  // description: 'Lorem',
+  // price: 30,
+  // status: 'On road',
+  //   });
+  //   res.json(product);
+  // } catch (err) {
+  //   res.json(err);
+  // }
+  const t = await sequelize.transaction();
+
   try {
-    const product = await Product.create({
-      name: 'sas',
-      description: 'Lorem',
-      price: 30,
-      status: 'On road',
+    const product = await Product.create(req.body, {
+      transaction: t,
     });
-    res.json(product);
+    for (const categoryId of req.body.categories) {
+      await product.addCategory(categoryId, { transaction: t });
+    }
+    await t.commit();
+    res.status(201).json(product);
   } catch (err) {
-    res.json(err);
+    console.error(err);
+    await t.rollback();
+    res.status(500).json({ message: err.message });
+    // if (err instanceof Sequelize.ValidationError) {
+    //   res.status(400).json(format(err));
+    // } else {
+    // }
   }
 });
 
