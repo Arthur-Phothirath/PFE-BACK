@@ -114,7 +114,7 @@ router.post('/forgetpassword', async (req, res) => {
 router.get(
   '/get',
   auth.authenticateToken,
-  checkRole.checkRole,
+  // checkRole.checkRole,
   async (req, res) => {
     try {
       let user = await User.findAll({

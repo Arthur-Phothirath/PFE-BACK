@@ -51,6 +51,39 @@ router.get('/get', async (req, res) => {
   }
 });
 
+router.get('/getByCategory/:id', async (req, res) => {
+  try {
+    let productQuery = await Product.findAll({
+      include: [
+        {
+          model: Category,
+          as: 'categories',
+          where: {
+            id: req.params.id,
+          },
+        },
+      ],
+    });
+    if (!productQuery) {
+      throw new Error();
+    }
+    return res.status(200).json(productQuery);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/get/:id', productMiddleware.productExist, async (req, res) => {
+  try {
+    if (!res.locals.productExist) {
+      throw new Error();
+    }
+    return res.status(200).json(res.locals.productExist);
+  } catch {
+    res.status(400).json({ message: 'Internals issues' });
+  }
+});
+
 router.patch(
   '/patch',
   auth.authenticateToken,
@@ -66,13 +99,46 @@ router.patch(
       if (!updateName) {
         return res.status(404).json({ message: 'Product not found' });
       }
-      updateName.name = product.name;
       try {
+        updateName.name = product.name;
+        updateName.description = product.description;
+        updateName.price = product.price;
+        updateName.status = product.status;
         await updateName.save();
+        return res
+          .status(200)
+          .json({ message: 'Product Updated Successfully' });
       } catch {
         return res.status(404).json({ message: 'A error happened.' });
       }
-      return res.status(200).json({ message: 'Product Updated Successfully' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+);
+
+router.delete(
+  '/delete/:id',
+  auth.authenticateToken,
+  checkRole.checkRole,
+  async (req, res, next) => {
+    try {
+      let product = await Product.findOne({
+        where: {
+          id: req.params.id,
+        },
+      });
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      try {
+        await product.destroy();
+        return res
+          .status(200)
+          .json({ message: 'Product Deleted Successfully' });
+      } catch {
+        return res.status(404).json({ message: 'A error happened.' });
+      }
     } catch (err) {
       res.status(500).json(err);
     }

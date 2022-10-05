@@ -1,6 +1,5 @@
 const { Category } = require('../models');
 
-// function product exist
 const categoryExist = async (req, res, next) => {
   try {
     const id = req.params.id;
