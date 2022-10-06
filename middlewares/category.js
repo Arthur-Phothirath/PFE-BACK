@@ -10,7 +10,7 @@ const categoryExist = async (req, res, next) => {
     res.locals.categoryExist = categoryExist;
     next();
   } catch (error) {
-    res.status(500).json({ message: 'category already exist' });
+    res.status(500).json({ message: 'Internal issue.' });
   }
 };
 

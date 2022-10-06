@@ -7,45 +7,61 @@ const { createToken } = require('../services/authentication');
 async function login() {
   const user = await User.findOne();
   const token = createToken(user);
-  return token;
+  return {
+    token: 'Bearer ' + token,
+    user: user,
+  };
 }
+
+// function createUser() {
+//   return {
+//     name: 'guest',
+//     contactNumber: '1',
+//     email: 'guest.com',
+//     password: 'guest',
+//     valided: 0,
+//     role: 'guest',
+//   };
+// }
 
 describe('login', () => {
   // More things come here
   it('should return 200 OK', async () => {
-    console.log('POLOLO', await login());
     return await supertest(app)
       .post('/user/login')
       .send({
-        email: 'admin@gmail.com',
+        email: 'admin.com',
         password: 'admin',
       })
       .expect(200);
   });
 });
 
-describe('home page', () => {
+describe('GET All Guest', () => {
   // More things come here
   it('should return 200 OK', async () => {
-    const token = await login();
+    const { token } = await login();
     return await supertest(app)
-      .get('/user/get')
-      .auth(token, { type: 'bearer' })
-      // .set('Authorization', `Bearer ${token}`)
+      .get('/user/getAllUser')
+      .set('Authorization', token)
       .expect(200);
   });
 });
 
-// describe('GET product', () => {
-//   describe('GET /product/get', () => {
-//     it('should return 200 OK', () => {
-//       return supertest(app).get('/product/get').expect(200);
-//     });
-//   });
-
-//   describe('GET /product/getByCategory/:id', () => {
-//     it('should return 200 OK', () => {
-//       return supertest(app).get('/product/getByCategory/1').expect(200);
-//     });
+// describe('POST signup', () => {
+//   // More things come here
+//   it('should return 200 OK', async () => {
+//     const userData = createUser();
+//     return await supertest(app)
+//       .post('/user/signup')
+//       .send({
+//         name: userData.name,
+//         contactNumber: userData.contactNumber,
+//         email: userData.email,
+//         password: userData.password,
+//         valided: userData.valided,
+//         role: userData.role,
+//       })
+//       .expect(200);
 //   });
 // });

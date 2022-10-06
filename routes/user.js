@@ -231,12 +231,9 @@ router.get('/createUser', async (req, res) => {
   }
 });
 
-router.get('/getAllUser', async (req, res, next) => {
+router.get('/getAllUser', auth.authenticateToken, async (req, res, next) => {
   try {
     let userQuery = await User.findAll();
-    if (!userQuery) {
-      return res.status(500).json('Failed');
-    }
     return res.status(200).json(userQuery);
   } catch (err) {
     res.status(500).json('Failed');
