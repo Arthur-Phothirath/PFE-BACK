@@ -1,5 +1,5 @@
 const express = require('express');
-const { productMiddleware } = require('../middlewares');
+const { productMiddleware, categoryMiddleware } = require('../middlewares');
 const { Category, Product, sequelize } = require('../models');
 const router = express.Router();
 let auth = require('../services/authentication');
@@ -51,27 +51,31 @@ router.get('/get', async (req, res) => {
   }
 });
 
-router.get('/getByCategory/:id', async (req, res) => {
-  try {
-    let productQuery = await Product.findAll({
-      include: [
-        {
-          model: Category,
-          as: 'categories',
-          where: {
-            id: req.params.id,
+router.get(
+  '/getByCategory/:id',
+  categoryMiddleware.categoryExist,
+  async (req, res) => {
+    try {
+      if (!res.locals.categoryExist) {
+        throw new Error();
+      }
+      let productQuery = await Product.findAll({
+        include: [
+          {
+            model: Category,
+            as: 'categories',
+            where: {
+              id: req.params.id,
+            },
           },
-        },
-      ],
-    });
-    if (!productQuery) {
-      throw new Error();
+        ],
+      });
+      return res.status(200).json(productQuery);
+    } catch (err) {
+      res.status(400).json(err);
     }
-    return res.status(200).json(productQuery);
-  } catch (err) {
-    res.status(500).json(err);
   }
-});
+);
 
 router.get('/get/:id', productMiddleware.productExist, async (req, res) => {
   try {
