@@ -1,12 +1,15 @@
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/user', userRoute);

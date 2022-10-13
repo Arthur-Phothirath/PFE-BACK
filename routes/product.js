@@ -1,14 +1,15 @@
 const express = require('express');
+const { USER_ROLE } = require('../globals/type');
 const { productMiddleware, categoryMiddleware } = require('../middlewares');
 const { Category, Product, sequelize } = require('../models');
 const router = express.Router();
-let auth = require('../services/authentication');
-let checkRole = require('../services/checkRole');
+const auth = require('../services/authentication');
+const { checkRole } = require('../services/checkRole');
 
 router.post(
   '/add',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   productMiddleware.productExist,
   async (req, res, next) => {
     let product = req.body;
@@ -91,7 +92,7 @@ router.get('/get/:id', productMiddleware.productExist, async (req, res) => {
 router.patch(
   '/patch',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     let product = req.body;
     try {
@@ -124,7 +125,7 @@ router.patch(
 router.delete(
   '/delete/:id',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     try {
       let product = await Product.findOne({

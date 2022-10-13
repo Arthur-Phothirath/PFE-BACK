@@ -4,8 +4,12 @@ const app = require('../app');
 const User = require('../models/User');
 const { createToken } = require('../services/authentication');
 
-async function login() {
-  const user = await User.findOne();
+async function login({ role = null }) {
+  const options = {};
+  if (role) {
+    options = { attributes: ['role'], where: { role } };
+  }
+  const user = await User.findOne(options);
   const token = createToken(user);
   return {
     token: 'Bearer ' + token,
@@ -24,29 +28,36 @@ async function login() {
 //   };
 // }
 
-// describe('login', () => {
-//   // More things come here
-//   it('should return 200 OK', async () => {
-//     return await supertest(app)
-//       .post('/user/login')
-//       .send({
-//         email: 'admin.com',
-//         password: 'admin',
-//       })
-//       .expect(200);
-//   });
-// });
+describe('login', () => {
+  // More things come here
+  it('should return 200 OK', async () => {
+    return await supertest(app)
+      .post('/user/login')
+      .send({
+        email: 'admin.com',
+        password: 'admin',
+      })
+      .expect(200);
+  });
+});
 
-// describe('GET All Guest', () => {
-//   // More things come here
-//   it('should return 200 OK', async () => {
-//     const { token } = await login();
-//     return await supertest(app)
-//       .get('/user/getAllUser')
-//       .set('Authorization', token)
-//       .expect(200);
-//   });
-// });
+describe('GET All Guest', () => {
+  it('should return 200 OK', async () => {
+    const { token } = await login('admin');
+    return await supertest(app)
+      .get('/user/getAllUser')
+      .set('Authorization', token)
+      .expect(200);
+  });
+
+  it('should return 200 Unauthorized', async () => {
+    const { token } = await login('guest');
+    return await supertest(app)
+      .get('/user/getAllUser')
+      .set('Authorization', token)
+      .expect(200);
+  });
+});
 
 // describe('POST signup', () => {
 //   // More things come here

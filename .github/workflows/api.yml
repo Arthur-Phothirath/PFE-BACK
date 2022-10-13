@@ -1,19 +1,18 @@
 name: Node CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+      - staging
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v1
@@ -21,21 +20,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: npm install, build, and test
+      - name: npm install, and test
         run: |
-          #cp ./config.json.example config.json
           npm install
-          sudo service mysql start
-          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword < etc/original.sql
-          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
-          #This command adds the proper mysql port to the config file
-          # node scripts/ci ${{ job.services.mysql.ports['3306'] }}
-          mysql -u root -p
-          password
-          CREATE DATABASE pfetest;
-          \q
-          npm run build --if-present
           npm test
         env:
           CI: true
-          DATABASE_URL: mysql://root:password@localhost:3306/pfetest
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
