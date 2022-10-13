@@ -50,12 +50,8 @@ describe('GET All Guest', () => {
       .expect(200);
   });
 
-  it('should return 200 Unauthorized', async () => {
-    const { token } = await login('guest');
-    return await supertest(app)
-      .get('/user/getAllUser')
-      .set('Authorization', token)
-      .expect(200);
+  it('should return 401 Unauthorized', async () => {
+    return await supertest(app).get('/user/getAllUser').expect(401);
   });
 });
 
