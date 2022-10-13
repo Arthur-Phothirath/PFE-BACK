@@ -10,11 +10,11 @@ describe('GET All Product', () => {
 });
 
 describe('GET /product/getByCategory/:id', () => {
-  describe('when the id is valid', () => {
-    it('should return 200 OK', () => {
-      return supertest(app).get('/product/getByCategory/1').expect(200);
-    });
-  });
+  // describe('when the id is valid', () => {
+  //   it('should return 200 OK', () => {
+  //     return supertest(app).get('/product/getByCategory/1').expect(200);
+  //   });
+  // });
   describe('when the id is invalid', () => {
     it('should return 400 NOT FOUND', () => {
       return supertest(app).get('/product/getByCategory/0').expect(400);
