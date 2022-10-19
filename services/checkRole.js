@@ -1,10 +1,11 @@
-require('dotenv').config();
-
-function checkRole(req, res, next) {
-    if(res.locals.role == process.env.GUEST){
-        res.sendStatus(401)
+function checkRole(role) {
+  return (req, res, next) => {
+    if (res.locals.role === role) {
+      next();
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
     }
-    next()
+  };
 }
 
-module.exports = { checkRole: checkRole}
+module.exports = { checkRole };

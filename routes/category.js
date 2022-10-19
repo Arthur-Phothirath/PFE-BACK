@@ -1,14 +1,15 @@
 const { Category, sequelize } = require('../models');
 const express = require('express');
 const router = express.Router();
-let auth = require('../services/authentication');
-let checkRole = require('../services/checkRole');
+const auth = require('../services/authentication');
+const { checkRole } = require('../services/checkRole');
+const { USER_ROLE } = require('../globals/type');
 const { categoryMiddleware } = require('../middlewares');
 
 router.post(
   '/add',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   categoryMiddleware.categoryExist,
   async (req, res) => {
     let category = req.body;
@@ -33,7 +34,7 @@ router.post(
 router.get(
   '/get',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     try {
       let categoryName = await Category.findAll({
@@ -52,7 +53,7 @@ router.get(
 router.patch(
   '/patch',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     let product = req.body;
     try {

@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User.js');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
 const nodemailer = require('nodemailer');
-require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const { USER_ROLE } = require('../globals/type');
+const User = require('../models/User.js');
 
 let auth = require('../services/authentication');
-let checkRole = require('../services/checkRole');
+let { checkRole } = require('../services/checkRole');
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
+});
 
 router.post('/signup', async (req, res) => {
   try {
@@ -63,14 +69,6 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-});
-
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
 });
 
 router.post('/forgetpassword', async (req, res) => {
@@ -137,7 +135,7 @@ router.get(
 router.patch(
   '/update',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res) => {
     try {
       let userExist = await User.findOne({
@@ -218,12 +216,12 @@ router.patch('/changePassword', auth.authenticateToken, async (req, res) => {
 router.get('/createUser', async (req, res) => {
   try {
     const user = await User.create({
-      name: 'admin',
+      name: 'guest',
       contactNumber: '1',
-      email: 'admin.com',
+      email: 'guest.com',
       password: 'admin',
       valided: 1,
-      role: 'admin',
+      role: 'guest',
     });
     res.json(user);
   } catch (err) {
@@ -231,13 +229,18 @@ router.get('/createUser', async (req, res) => {
   }
 });
 
-router.get('/getAllUser', auth.authenticateToken, async (req, res, next) => {
-  try {
-    let userQuery = await User.findAll();
-    return res.status(200).json(userQuery);
-  } catch (err) {
-    res.status(500).json('Failed');
+router.get(
+  '/getAllUser',
+  auth.authenticateToken,
+  checkRole(USER_ROLE.ADMIN),
+  async (req, res, next) => {
+    try {
+      let userQuery = await User.findAll();
+      return res.status(200).json(userQuery);
+    } catch (err) {
+      res.status(400).json('Failed');
+    }
   }
-});
+);
 
 module.exports = router;

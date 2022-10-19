@@ -2,12 +2,12 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-describe('GET All Product', () => {
-  // More things come here
-  it('should return 200 OK', async () => {
-    return await supertest(app).get('/product/get').expect(200);
-  });
-});
+// describe('GET All Product', () => {
+//   // More things come here
+//   it('should return 200 OK', async () => {
+//     return await supertest(app).get('/product/get').expect(200);
+//   });
+// });
 
 describe('GET /product/getByCategory/:id', () => {
   describe('when the id is valid', () => {
