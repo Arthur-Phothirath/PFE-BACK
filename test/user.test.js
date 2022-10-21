@@ -4,8 +4,12 @@ const app = require('../app');
 const User = require('../models/User');
 const { createToken } = require('../services/authentication');
 
-async function login() {
-  const user = await User.findOne();
+async function login({ role = null }) {
+  const options = {};
+  if (role) {
+    options = { attributes: ['role'], where: { role } };
+  }
+  const user = await User.findOne(options);
   const token = createToken(user);
   return {
     token: 'Bearer ' + token,
@@ -38,13 +42,16 @@ describe('login', () => {
 });
 
 describe('GET All Guest', () => {
-  // More things come here
   it('should return 200 OK', async () => {
-    const { token } = await login();
+    const { token } = await login('admin');
     return await supertest(app)
       .get('/user/getAllUser')
       .set('Authorization', token)
       .expect(200);
+  });
+
+  it('should return 401 Unauthorized', async () => {
+    return await supertest(app).get('/user/getAllUser').expect(401);
   });
 });
 

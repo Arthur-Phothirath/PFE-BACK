@@ -1,5 +1,8 @@
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');

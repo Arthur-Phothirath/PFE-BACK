@@ -345,4 +345,8 @@ $RECYCLE.BIN/
 
 
 invoices
+<<<<<<< HEAD
 reminder.txt
+=======
+.github/
+>>>>>>> e874d6bd2eb1dc7a0759654af2964858374e158e
