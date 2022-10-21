@@ -1,27 +1,32 @@
+const { Category, sequelize } = require('../models');
 const express = require('express');
 const router = express.Router();
-const Category = require('../models/Category.js');
-let auth = require('../services/authentication');
-let checkRole = require('../services/checkRole');
+const auth = require('../services/authentication');
+const { checkRole } = require('../services/checkRole');
+const { USER_ROLE } = require('../globals/type');
+const { categoryMiddleware } = require('../middlewares');
 
 router.post(
   '/add',
   auth.authenticateToken,
-  checkRole.checkRole,
-  async (req, res, next) => {
+  checkRole(USER_ROLE.ADMIN),
+  categoryMiddleware.categoryExist,
+  async (req, res) => {
     let category = req.body;
+    const t = await sequelize.transaction();
     try {
-      let categoryExist = await Category.findOne({
-        where: {
-          name: category.name,
-        },
-      });
-      if (categoryExist) {
-        return res.json('Category already exist.');
+      if (res.locals.categoryExist) {
+        throw new Error();
       }
-      return res.status(200).json({ message: 'Category Added Successfully' });
-    } catch (err) {
-      res.status(500).json(err);
+      const categoryCreate = await Category.create(category, {
+        transaction: t,
+      });
+      await t.commit();
+      res.json(categoryCreate);
+      return res.status(201).json({ message: 'Category Added Successfully' });
+    } catch ({ message }) {
+      await t.rollback();
+      res.status(400).json({ message: 'Internals issues' });
     }
   }
 );
@@ -29,7 +34,7 @@ router.post(
 router.get(
   '/get',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     try {
       let categoryName = await Category.findAll({
@@ -48,7 +53,7 @@ router.get(
 router.patch(
   '/patch',
   auth.authenticateToken,
-  checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res, next) => {
     let product = req.body;
     try {

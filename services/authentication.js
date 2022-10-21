@@ -1,4 +1,3 @@
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 function authenticateToken(req, res, next) {
@@ -16,4 +15,13 @@ function authenticateToken(req, res, next) {
   });
 }
 
-module.exports = { authenticateToken: authenticateToken };
+function createToken(user) {
+  const { email, role } = user;
+  const tokenData = { email, role };
+  const accessToken = jwt.sign(tokenData, process.env.ACCESS_TOKEN, {
+    expiresIn: '1h',
+  });
+  return accessToken;
+}
+
+module.exports = { authenticateToken: authenticateToken, createToken };
