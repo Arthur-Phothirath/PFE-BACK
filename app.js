@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json('Hello World');
+});
+
 app.use('/user', userRoute);
 app.use('/category', categoryRoute);
 app.use('/product', productRoute);
