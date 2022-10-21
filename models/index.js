@@ -1,6 +1,7 @@
 const sequelize = require('../lib/db');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const Bill = require('../models/Bill');
 
 // Product - Category
 Category.belongsToMany(Product, {
@@ -23,4 +24,5 @@ module.exports = {
   sequelize,
   Product,
   Category,
+  Bill,
 };
