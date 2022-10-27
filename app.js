@@ -10,7 +10,7 @@ const billRoute = require('./routes/bill');
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -21,5 +21,15 @@ app.use('/user', userRoute);
 app.use('/category', categoryRoute);
 app.use('/product', productRoute);
 app.use('/bill', billRoute);
+
+app.get('/', (req, res) => {
+  Test.findAll()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 
 module.exports = app;

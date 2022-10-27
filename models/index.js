@@ -16,7 +16,7 @@ Product.belongsToMany(Category, {
   foreignKey: 'product_id',
 });
 
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync().then(() => {
   console.log('Database & tables created!');
 });
 

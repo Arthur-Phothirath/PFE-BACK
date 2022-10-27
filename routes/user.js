@@ -216,12 +216,12 @@ router.patch('/changePassword', auth.authenticateToken, async (req, res) => {
 router.get('/createUser', async (req, res) => {
   try {
     const user = await User.create({
-      name: 'guest',
+      name: 'admin',
       contactNumber: '1',
-      email: 'guest.com',
+      email: 'admin.com',
       password: 'admin',
       valided: 1,
-      role: 'guest',
+      role: 'admin',
     });
     res.json(user);
   } catch (err) {
