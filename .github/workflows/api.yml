@@ -1,29 +1,71 @@
-# name: Node CI
+name: Node CI
 
-# on:
-#   push:
-#     branches:
-#       - main
-#       - staging
-#   pull_request:
-#     branches:
-#       - main
-#       - staging
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+      - staging
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - uses: actions/checkout@v1
-#       - name: Use Node.js
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: 14.x
-#       - name: npm install, and test
-#         run: |
-#           npm install
-#           npm test
-#         env:
-#           CI: true
-#           DATABASE_URL: ${{secrets.DATABASE_URL}}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: npm install, and test
+        run: |
+          npm install
+        env:
+          CI: true
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+  # vercel-dev:
+  #   # needs: test
+  #   if: github.base_ref == 'staging'
+  #   name: "Deploy api to Vercel staging"
+  #   env:
+  #     DATABASE_URL: ${{secrets.DATABASE_URL}}
+  #     # JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: '14'
+  #         registry-url: https://registry.npmjs.org/
+
+  #     - name: "Deploy to Vercel"
+  #       run: npx vercel --token ${VERCEL_TOKEN} --prod
+  #       env:
+  #         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  #         VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID_DEV }}
+  #         VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
+
+  # vercel-prod:
+  #   needs: test
+  #   env:
+  #     MONGODB_CONNECTION_STR: ${{ secrets.MONGODB_CONNECTION_STR_PROD }}
+  #     JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+  #   if: github.base_ref == 'master'
+  #   runs-on: ubuntu-latest
+  #   name: "Deploy api to Vercel prod"
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: '14'
+  #         registry-url: https://registry.npmjs.org/
+
+  #     - name: "Deploy to Vercel"
+  #       run: npx vercel --token ${VERCEL_TOKEN} --prod
+  #       env:
+  #         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  #         VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID_PROD }}
+  #         VERCEL_ORG_ID: ${{ secrets.ORG_ID }}

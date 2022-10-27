@@ -112,7 +112,7 @@ router.post('/forgetpassword', async (req, res) => {
 router.get(
   '/get',
   auth.authenticateToken,
-  // checkRole.checkRole,
+  checkRole(USER_ROLE.ADMIN),
   async (req, res) => {
     try {
       let user = await User.findAll({
@@ -213,7 +213,7 @@ router.patch('/changePassword', auth.authenticateToken, async (req, res) => {
   }
 });
 
-router.get('/createUser', async (req, res) => {
+router.get('/createAdmin', async (req, res) => {
   try {
     const user = await User.create({
       name: 'admin',
@@ -222,6 +222,22 @@ router.get('/createUser', async (req, res) => {
       password: 'admin',
       valided: 1,
       role: 'admin',
+    });
+    res.json(user);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
+router.get('/createGuest', async (req, res) => {
+  try {
+    const user = await User.create({
+      name: 'guest',
+      contactNumber: '1',
+      email: 'guest.com',
+      password: 'guest',
+      valided: 0,
+      role: 'guest',
     });
     res.json(user);
   } catch (err) {
