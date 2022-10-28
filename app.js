@@ -9,6 +9,8 @@ const productRoute = require('./routes/product');
 const securityRoute = require('./routes/security');
 const billRoute = require('./routes/bill');
 const { authenticateToken } = require('./services');
+const { checkRole } = require('./services');
+const { USER_ROLE } = require('./globals/type');
 
 const app = express();
 
@@ -20,10 +22,21 @@ app.get('/', (req, res) => {
   res.json('Hello World');
 });
 
-app.use('/user', authenticateToken, userRoute);
-app.use('/category', categoryRoute);
-app.use('/product', productRoute);
 app.use(securityRoute);
+
+app.use('/user', authenticateToken, checkRole(USER_ROLE.ADMIN), userRoute);
+app.use(
+  '/category',
+  authenticateToken,
+  checkRole(USER_ROLE.ADMIN),
+  categoryRoute
+);
+app.use(
+  '/product',
+  authenticateToken,
+  checkRole(USER_ROLE.ADMIN),
+  productRoute
+);
 app.use('/bill', billRoute);
 
 module.exports = app;

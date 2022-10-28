@@ -1,25 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { USER_ROLE } = require('../globals/type');
-const { checkRole } = require('../services');
 
-router.get(
-  '/',
-  checkRole(USER_ROLE.ADMIN),
-  require('../controllers/user').cget
-);
+router.get('/', require('../controllers/user').cget);
 
-router.post(
-  '/',
-  checkRole(USER_ROLE.ADMIN),
-  require('../controllers/user').post
-);
+router.post('/', require('../controllers/user').post);
 
-router.get(
-  '/:id',
-  checkRole(USER_ROLE.ADMIN),
-  require('../controllers/user').get
-);
+router.get('/:id', require('../controllers/user').get);
 
 router.put('/:id', require('../controllers/user').put);
 
