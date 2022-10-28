@@ -2,7 +2,7 @@ const supertest = require('supertest');
 
 const app = require('../app');
 const User = require('../models/User');
-const { createToken } = require('../services/authentication');
+const { createToken } = require('../services');
 
 async function login({ role = null }) {
   const options = {};

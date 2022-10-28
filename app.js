@@ -6,30 +6,24 @@ if (process.env.NODE_ENV !== 'production') {
 const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
+const securityRoute = require('./routes/security');
 const billRoute = require('./routes/bill');
+const { authenticateToken } = require('./services');
+
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json('Hello World');
 });
 
-app.use('/user', userRoute);
+app.use('/user', authenticateToken, userRoute);
 app.use('/category', categoryRoute);
 app.use('/product', productRoute);
+app.use(securityRoute);
 app.use('/bill', billRoute);
-
-app.get('/', (req, res) => {
-  Test.findAll()
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
 
 module.exports = app;
