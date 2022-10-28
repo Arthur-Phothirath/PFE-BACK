@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-let auth = require('../services/authentication');
+const { authenticateToken } = require('../services');
 const ejs = require('ejs');
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 const uuid = require('uuid');
 
-router.post('/generateReport', auth.authenticateToken, async (req, res) => {
+router.post('/generateReport', authenticateToken, async (req, res) => {
   console.log('Passe 0');
   const generatedUuid = uuid.v1();
   const orderDetails = req.body;
