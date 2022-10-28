@@ -1,5 +1,5 @@
-const http = require('http');
-const app = require('./app');
+// const http = require('http');
+// const app = require('./app');
 
-const server = http.createServer(app);
-server.listen(process.env.PORT);
+// const server = http.createServer(app);
+// server.listen(process.env.PORT);

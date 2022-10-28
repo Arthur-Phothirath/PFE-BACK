@@ -19,7 +19,7 @@ function createToken(user) {
   const { email, role } = user;
   const tokenData = { email, role };
   const accessToken = jwt.sign(tokenData, process.env.ACCESS_TOKEN, {
-    expiresIn: '1h',
+    expiresIn: '1y',
   });
   return accessToken;
 }
