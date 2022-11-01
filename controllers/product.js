@@ -48,7 +48,7 @@ module.exports = {
   },
 
   get:
-    (categoryMiddleware.categoryExist,
+    (productMiddleware.productExist,
     async (req, res) => {
       try {
         if (!res.locals.categoryExist) {
@@ -124,35 +124,35 @@ module.exports = {
 };
 
 // router.get('/test', async (req, res) => {
-//     // try {
-//     //   const product = await Product.create({
-//     // name: 'sas',
-//     // description: 'Lorem',
-//     // price: 30,
-//     // status: 'On road',
-//     //   });
-//     //   res.json(product);
-//     // } catch (err) {
-//     //   res.json(err);
-//     // }
-//     const t = await sequelize.transaction();
+//   try {
+//     const product = await Product.create({
+//       name: 'sas',
+//       description: 'Lorem',
+//       price: 30,
+//       status: 'On road',
+//     });
+//     res.json(product);
+//   } catch (err) {
+//     res.json(err);
+//   }
+//   const t = await sequelize.transaction();
 
-//     try {
-//       const product = await Product.create(req.body, {
-//         transaction: t,
-//       });
-//       for (const categoryId of req.body.categories) {
-//         await product.addCategory(categoryId, { transaction: t });
-//       }
-//       await t.commit();
-//       res.status(201).json(product);
-//     } catch (err) {
-//       console.error(err);
-//       await t.rollback();
-//       res.status(500).json({ message: err.message });
-//       // if (err instanceof Sequelize.ValidationError) {
-//       //   res.status(400).json(format(err));
-//       // } else {
-//       // }
+//   try {
+//     const product = await Product.create(req.body, {
+//       transaction: t,
+//     });
+//     for (const categoryId of req.body.categories) {
+//       await product.addCategory(categoryId, { transaction: t });
 //     }
-//   });
+//     await t.commit();
+//     res.status(201).json(product);
+//   } catch (err) {
+//     console.error(err);
+//     await t.rollback();
+//     res.status(500).json({ message: err.message });
+//     if (err instanceof Sequelize.ValidationError) {
+//       res.status(400).json(format(err));
+//     } else {
+//     }
+//   }
+// });

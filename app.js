@@ -33,8 +33,8 @@ app.use(
 );
 app.use(
   '/product',
-  authenticateToken,
-  checkRole(USER_ROLE.ADMIN),
+  // authenticateToken,
+  // checkRole(USER_ROLE.ADMIN),
   productRoute
 );
 app.use('/bill', billRoute);
