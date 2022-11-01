@@ -67,7 +67,7 @@ describe('POST signup', () => {
         email: userData.email,
         password: userData.password,
         valided: userData.valided,
-        role: userData.role,
+        // role: userData.role,
       })
       .expect(200);
   });
