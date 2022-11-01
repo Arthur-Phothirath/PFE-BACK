@@ -55,20 +55,20 @@ describe('GET All Guest', () => {
   });
 });
 
-// describe('POST signup', () => {
-//   // More things come here
-//   it('should return 200 OK', async () => {
-//     const userData = createUser();
-//     return await supertest(app)
-//       .post('/user/signup')
-//       .send({
-//         name: userData.name,
-//         contactNumber: userData.contactNumber,
-//         email: userData.email,
-//         password: userData.password,
-//         valided: userData.valided,
-//         role: userData.role,
-//       })
-//       .expect(200);
-//   });
-// });
+describe('POST signup', () => {
+  // More things come here
+  it('should return 200 OK', async () => {
+    const userData = createUser();
+    return await supertest(app)
+      .post('/user/signup')
+      .send({
+        name: userData.name,
+        contactNumber: userData.contactNumber,
+        email: userData.email,
+        password: userData.password,
+        valided: userData.valided,
+        role: userData.role,
+      })
+      .expect(200);
+  });
+});
