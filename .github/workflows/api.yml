@@ -29,6 +29,7 @@ jobs:
           CI: true
           DATABASE_URL: ${{secrets.DATABASE_URL}}
   vercel-dev:
+    needs: build
     if: github.base_ref == 'staging'
     name: 'Deploy api to Vercel staging'
     env:
@@ -48,5 +49,6 @@ jobs:
       - name: 'Deploy to Vercel'
         run: npx vercel --token ${VERCEL_TOKEN} --prod
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
