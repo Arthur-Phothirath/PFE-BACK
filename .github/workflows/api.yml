@@ -29,7 +29,6 @@ jobs:
           CI: true
           DATABASE_URL: ${{secrets.DATABASE_URL}}
   vercel-dev:
-    needs: test
     if: github.base_ref == 'staging'
     name: 'Deploy api to Vercel staging'
     env:
