@@ -24,8 +24,10 @@ jobs:
       - name: npm install, and test
         run: |
           npm install
+          npm test
         env:
           CI: true
+          NODE_ENV: production
           DATABASE_URL: ${{secrets.DATABASE_URL}}
   vercel-dev:
     needs: build
