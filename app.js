@@ -3,6 +3,8 @@ const cors = require('cors');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+const logger = require('./lib/logger');
+
 const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
@@ -19,6 +21,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
+  logger().info('Hello World');
   res.json('Hello World');
 });
 

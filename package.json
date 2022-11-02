@@ -21,7 +21,9 @@
     "pg": "^8.8.0",
     "puppeteer": "^19.0.0",
     "sequelize": "^6.23.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2",
+    "winston-loki": "^6.0.6"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
