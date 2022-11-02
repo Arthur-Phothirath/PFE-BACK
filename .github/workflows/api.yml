@@ -29,7 +29,7 @@ jobs:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
   vercel-dev:
     needs: build
-    if: github.base_ref == 'staging' && needs.build.result == 'success'
+    if: needs.build.result == 'success'
     name: 'Deploy api to Vercel staging'
     env:
       DATABASE_URL: ${{secrets.DATABASE_URL}}
