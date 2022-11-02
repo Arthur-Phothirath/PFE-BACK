@@ -27,6 +27,7 @@ jobs:
         env:
           CI: true
           DATABASE_URL: ${{secrets.DATABASE_URL}}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   vercel-dev:
     needs: build
     if: github.base_ref == 'staging' && needs.build.result == 'success'
