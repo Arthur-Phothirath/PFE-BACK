@@ -38,6 +38,7 @@ module.exports = {
         throw new Error('Error on Email or Password');
       }
     } catch (err) {
+      console.log(err + 'error');
       res.status(500).json(err);
     }
   },
