@@ -20,10 +20,10 @@ module.exports = {
         },
       });
       if (!userExist) {
-        return res.status(400).json({ message: 'Error on Email or Password' });
+        throw new Error('Error on Email or Password');
       }
       if (!userExist.valided) {
-        return res.status(401).json({ message: 'Wait for Admin Approval' });
+        throw new Error('Wait for admin approval');
       }
       if (
         userExist &&
@@ -35,7 +35,7 @@ module.exports = {
         });
         res.status(200).json({ token: accessToken });
       } else {
-        return res.status(500).json(err);
+        throw new Error('Error on Email or Password');
       }
     } catch (err) {
       res.status(500).json(err);
