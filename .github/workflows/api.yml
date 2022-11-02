@@ -25,7 +25,8 @@ jobs:
         run: |
           npm install
           touch .env
-          NODE_ENV = "production".env
+          echo NODE_ENV = "production" > .env
+          cat .env
           npm test
         env:
           CI: true
