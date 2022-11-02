@@ -24,6 +24,8 @@ jobs:
       - name: npm install, and test
         run: |
           npm install
+          touch .env
+          NODE_ENV = "production".env
           npm test
         env:
           CI: true
