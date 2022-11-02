@@ -24,10 +24,6 @@ jobs:
       - name: npm install, and test
         run: |
           npm install
-          touch .env
-          echo NODE_ENV = "production" > .env
-          cat .env
-          npm test
         env:
           CI: true
           DATABASE_URL: ${{secrets.DATABASE_URL}}
