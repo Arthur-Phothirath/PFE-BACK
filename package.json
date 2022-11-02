@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test_local": "NODE_ENV=local jest",
     "test": "jest",
     "start": "nodemon index.js"
   },
