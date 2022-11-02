@@ -28,32 +28,32 @@ async function login({ role = null }) {
 //   };
 // }
 
-// describe('login', () => {
-//   // More things come here
-//   it('should return 200 OK', async () => {
-//     return await supertest(app)
-//       .post('/login')
-//       .send({
-//         email: 'admin.com',
-//         password: 'admin2',
-//       })
-//       .expect(200);
-//   });
-// });
-
-describe('GET All Guest', () => {
+describe('login', () => {
+  // More things come here
   it('should return 200 OK', async () => {
-    const { token } = await login('admin');
     return await supertest(app)
-      .get('/user')
-      .set('Authorization', token)
+      .post('/login')
+      .send({
+        email: 'admin.com',
+        password: 'admin2',
+      })
       .expect(200);
   });
-
-  it('should return 401 Unauthorized', async () => {
-    return await supertest(app).get('/user').expect(401);
-  });
 });
+
+// describe('GET All Guest', () => {
+// it('should return 200 OK', async () => {
+//   const { token } = await login('admin');
+//   return await supertest(app)
+//     .get('/user')
+//     .set('Authorization', token)
+//     .expect(200);
+// });
+
+// it('should return 401 Unauthorized', async () => {
+//   return await supertest(app).get('/user').expect(401);
+// });
+// });
 
 // describe('POST signup', () => {
 //   // More things come here
