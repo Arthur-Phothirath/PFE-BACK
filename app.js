@@ -30,8 +30,8 @@ app.use(securityRoute);
 app.use('/user', authenticateToken, checkRole(USER_ROLE.ADMIN), userRoute);
 app.use(
   '/category',
-  authenticateToken,
-  checkRole(USER_ROLE.ADMIN),
+  // authenticateToken,
+  // checkRole(USER_ROLE.ADMIN),
   categoryRoute
 );
 app.use(
