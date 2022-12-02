@@ -25,7 +25,7 @@ app.use(cors({ origin: corsOptions, credentials: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  logger().info('Hello World');
+  logger().info('Hello World ');
   res.json('Hello World');
 });
 
