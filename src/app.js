@@ -16,7 +16,11 @@ const { USER_ROLE } = require('./globals/type');
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CORS_OPTIONS,
+  // optionsSuccessStatus: 200,
+};
+app.use(cors({ origin: corsOptions, credentials: true }));
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
