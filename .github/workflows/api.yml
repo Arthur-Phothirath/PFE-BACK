@@ -58,6 +58,8 @@ jobs:
     name: 'Deploy api to Vercel production'
     env:
       DATABASE_URL: ${{secrets.DATABASE_URL}}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      CORS_OPTIONS: ${{ secrets.CORS_OPTIONS }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
