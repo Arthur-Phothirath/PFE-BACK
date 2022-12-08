@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const route = require('../controllers/user');
 
-router.get('/', require('../controllers/user').cget);
+router.get('/', route.cget);
 
-router.post('/', require('../controllers/user').post);
+router.post('/', route.post);
 
-router.get('/:id', require('../controllers/user').get);
+router.get('/:id', route.get);
 
-router.put('/:id', require('../controllers/user').put);
+router.put('/:id', route.put);
 
 // router.get('/createAdmin', async (req, res) => {
 //   try {
