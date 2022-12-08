@@ -9,7 +9,7 @@ const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
 const securityRoute = require('./routes/security');
-const factureRoute = require('./routes/facture');
+const billRoute = require('./routes/bill');
 const { authenticateToken } = require('./services');
 const { checkRole } = require('./services');
 const { USER_ROLE } = require('./globals/type');
@@ -44,6 +44,6 @@ app.use(
   // checkRole(USER_ROLE.ADMIN),
   productRoute
 );
-app.use('/facture', factureRoute);
+app.use('/bill', authenticateToken, billRoute);
 
 module.exports = app;
