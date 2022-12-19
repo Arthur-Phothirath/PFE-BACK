@@ -9,6 +9,10 @@ Category.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   { sequelize, modelName: 'Category' }
 );

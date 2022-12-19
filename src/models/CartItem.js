@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../lib/db');
 
-class Product extends Model {}
+class CartItem extends Model {}
 
-Product.init(
+CartItem.init(
   {
     name: {
       type: DataTypes.STRING,
@@ -13,20 +13,16 @@ Product.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    price_init: {
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    price_sale: {
+    unit_price: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    status: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
   },
-  { sequelize, modelName: 'Product' }
+  { sequelize, modelName: 'CartItem' }
 );
 
-module.exports = Product;
+module.exports = CartItem;

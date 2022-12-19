@@ -10,6 +10,10 @@ const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
 const securityRoute = require('./routes/security');
 const billRoute = require('./routes/bill');
+const cartItemRoute = require('./routes/cartItem');
+const discountRoute = require('./routes/discount');
+const orderRoute = require('./routes/order');
+const fixturesRoute = require('./routes/fixture');
 const { authenticateToken } = require('./services');
 const { checkRole } = require('./services');
 const { USER_ROLE } = require('./globals/type');
@@ -34,16 +38,25 @@ app.use(securityRoute);
 app.use('/user', authenticateToken, checkRole(USER_ROLE.ADMIN), userRoute);
 app.use(
   '/category',
-  // authenticateToken,
-  // checkRole(USER_ROLE.ADMIN),
+  authenticateToken,
+  checkRole(USER_ROLE.ADMIN),
   categoryRoute
 );
 app.use(
   '/product',
-  // authenticateToken,
-  // checkRole(USER_ROLE.ADMIN),
+  authenticateToken,
+  checkRole(USER_ROLE.ADMIN),
   productRoute
 );
+
+app.use('/cart_item', authenticateToken, cartItemRoute);
+
+app.use('/discount', authenticateToken, discountRoute);
+
+app.use('/order', authenticateToken, orderRoute);
+
 app.use('/bill', authenticateToken, billRoute);
+
+app.use('/fixture', fixturesRoute);
 
 module.exports = app;
