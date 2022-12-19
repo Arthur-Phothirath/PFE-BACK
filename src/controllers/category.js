@@ -37,6 +37,22 @@ module.exports = {
     }
   },
 
+  get: async (req, res, next) => {
+    try {
+      let categoryName = await Category.findOne({
+        where: {
+          id: req.params.id,
+        },
+      });
+      if (!categoryName) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+      return res.status(200).json(categoryName);
+    } catch (err) {
+      // res.status(500).json(err);
+    }
+  },
+
   put: async (req, res, next) => {
     let product = req.body;
     try {
@@ -80,15 +96,16 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-};
 
-// router.get('/test', async (req, res) => {
-//   try {
-//     const category = await Category.create({
-//       name: 'fiction',
-//     });
-//     res.json(category);
-//   } catch (err) {
-//     res.json(err);
-//   }
-// });
+  createCategory: async (req, res) => {
+    try {
+      const category = await Category.create({
+        name: 'fiction',
+        description: 'category',
+      });
+      res.json(category);
+    } catch (err) {
+      res.json(err);
+    }
+  },
+};
